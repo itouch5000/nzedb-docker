@@ -1,6 +1,6 @@
 server {
         # Change these settings to match your machine
-        listen 8800 default_server;
+        listen 8810 default_server;
         server_name localhost;
 
         # Everything below here doesn't need to be changed
@@ -39,5 +39,7 @@ server {
                 # The next two lines should go in your fastcgi_params
                 fastcgi_index index.php;
                 fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+
+		fastcgi_param SERVER_NAME $host;
         }
 }

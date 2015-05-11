@@ -4,7 +4,7 @@
 #
 
 # Use baseimage-docker
-FROM phusion/baseimage:0.9.13
+FROM phusion/baseimage:0.9.11
 
 # Set maintainer
 MAINTAINER razorgirl <https://github.com/razorgirl>
@@ -15,6 +15,10 @@ ENV HOME /root
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
+
+# Fix a Debianism of the nobody's uid being 65534
+RUN usermod -u 99 nobody
+RUN usermod -g 100 nobody
 
 # Regenerate SSH host keys.
 RUN /etc/my_init.d/00_regen_ssh_host_keys.sh
@@ -42,13 +46,13 @@ RUN \
   apt-get install -y unrar-free lame mediainfo p7zip-full
 
 # Install MariaDB.
-RUN \
-  apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0xcbcb082a1bb943db && \
-  apt-get update && \
-  echo "deb http://mirror2.hs-esslingen.de/mariadb/repo/10.0/ubuntu trusty main" > /etc/apt/sources.list.d/mariadb.list && \
-  apt-get update && \
-  apt-get install -y mariadb-server && \
-  sed -i 's/^\(bind-address\s.*\)/# \1/' /etc/mysql/my.cnf
+#RUN \
+#  apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0xcbcb082a1bb943db && \
+#  apt-get update && \
+#  echo "deb http://mirror2.hs-esslingen.de/mariadb/repo/10.0/ubuntu trusty main" > /etc/apt/sources.list.d/mariadb.list && \
+#  apt-get update && \
+#  apt-get install -y mariadb-server && \
+#  sed -i 's/^\(bind-address\s.*\)/# \1/' /etc/mysql/my.cnf
 
 # Install Python MySQL modules.
 RUN \
@@ -97,21 +101,25 @@ RUN \
   unlink /etc/nginx/sites-enabled/default && \
   ln -s /etc/nginx/sites-available/nZEDb /etc/nginx/sites-enabled/nZEDb
 
-# Clone nZEDb master and set directory permissions
-RUN \
-  mkdir /var/www && \
-  cd /var/www && \
-  git clone https://github.com/nZEDb/nZEDb.git && \
-  chown www-data:www-data nZEDb/www -R
-  chmod 777 /var/www/nZEDb/libs/smarty/templates_c && \
+## Clone nZEDb master and set directory permissions
+#RUN \
+#  mkdir /var/www && \
+#  cd /var/www && \
+#  git clone https://github.com/nZEDb/nZEDb.git && \
+#  chown www-data:www-data nZEDb/www -R
+#  chmod 777 /var/www/nZEDb/libs/smarty/templates_c && \
 
 # Add services.
 RUN mkdir /etc/service/nginx
 ADD nginx.sh /etc/service/nginx/run
 RUN mkdir /etc/service/php5-fpm && mkdir /var/log/php5-fpm
 ADD php5-fpm.sh /etc/service/php5-fpm/run
-RUN mkdir /etc/service/mariadb
-ADD mariadb.sh /etc/service/mariadb/run
+#RUN mkdir /etc/service/mariadb
+#ADD mariadb.sh /etc/service/mariadb/run
+
+# Add nZEDb.sh to execute during container startup
+RUN mkdir -p /etc/my_init.d
+ADD nZEDb.sh /etc/my_init.d/nZEDb.sh
 
 ## Install SSH key.
 ADD id_rsa.pub /tmp/key.pub
@@ -121,7 +129,7 @@ RUN cat /tmp/key.pub >> /root/.ssh/authorized_keys && rm -f /tmp/key.pub
 VOLUME ["/etc/nginx/sites-enabled", "/var/log", "/var/www/nZEDb", "/var/lib/mysql"]
 
 # Expose ports
-EXPOSE 8800
+EXPOSE 8810
 
 # Clean up APT when done.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
