@@ -4,7 +4,7 @@
 #
 
 # Use baseimage-docker
-FROM phusion/baseimage:0.9.11
+FROM phusion/baseimage:0.9.16
 
 # Set maintainer
 MAINTAINER razorgirl <https://github.com/razorgirl>
@@ -19,6 +19,8 @@ ENV LC_ALL en_US.UTF-8
 # Fix a Debianism of the nobody's uid being 65534
 RUN usermod -u 99 nobody
 RUN usermod -g 100 nobody
+
+RUN rm -f /etc/service/sshd/down
 
 # Regenerate SSH host keys.
 RUN /etc/my_init.d/00_regen_ssh_host_keys.sh

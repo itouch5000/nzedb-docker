@@ -17,6 +17,7 @@ if [[ ! -e /var/www/nZEDb/www/config.php ]]; then
 
 else
 
+  export TERM=xterm
   cd /var/www/nZEDb/misc/update/nix/tmux
   exec php start.php
 
