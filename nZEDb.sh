@@ -28,6 +28,13 @@ mv composer.phar /usr/local/bin/composer
 
 if [[ -e /var/www/nZEDb/nzedb/config/config.php ]]; then
 
+  croncmd="/usr/bin/php /var/www/nZEDb/cli/data/predb_import_daily_batch.php progress remote false"
+  cronjob="0 7 * * * $croncmd"
+
+  (crontab -l | grep -v "$croncmd" ; echo "$cronjob" ) | crontab -
+
+  $croncmd
+
   cd /var/www/nZEDb/misc/update/nix/tmux
   exec php start.php
 
