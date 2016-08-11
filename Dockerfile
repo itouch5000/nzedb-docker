@@ -4,7 +4,7 @@
 #
 
 # Use baseimage-docker
-FROM phusion/baseimage:0.9.16
+FROM phusion/baseimage:0.9.18
 
 # Set maintainer
 MAINTAINER razorgirl <https://github.com/razorgirl>
@@ -71,7 +71,8 @@ RUN \
   pip3 list
 
 # Install PHP.
-RUN apt-get install -y php5 php5-dev php-pear php5-gd php5-mysqlnd php5-curl php5-json php5-fpm
+RUN add-apt-repository -y ppa:ondrej/php5-5.6 && apt-get update && apt-get -y upgrade
+RUN apt-get install -y php5 php5-cli php5-dev php-pear php5-gd php5-mysqlnd php5-curl php5-json php5-fpm
 RUN sed -ri 's/(max_execution_time =) ([0-9]+)/\1 120/' /etc/php5/cli/php.ini
 RUN sed -ri 's/(memory_limit =) ([0-9]+)/\1 -1/' /etc/php5/cli/php.ini
 RUN sed -ri 's/;(date.timezone =)/\1 Europe\/London/' /etc/php5/cli/php.ini
