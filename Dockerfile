@@ -71,26 +71,33 @@ RUN \
   pip3 list
 
 # Install PHP.
-RUN add-apt-repository -y ppa:ondrej/php5-5.6 && apt-get update && apt-get -y upgrade
-RUN apt-get install -y php5 php5-cli php5-dev php-pear php5-gd php5-mysqlnd php5-curl php5-json php5-fpm php5-mcrypt
-RUN sed -ri 's/(max_execution_time =) ([0-9]+)/\1 120/' /etc/php5/cli/php.ini
-RUN sed -ri 's/(memory_limit =) ([0-9]+)/\1 -1/' /etc/php5/cli/php.ini
-RUN sed -ri 's/;(date.timezone =)/\1 Europe\/London/' /etc/php5/cli/php.ini
-RUN sed -ri 's/(max_execution_time =) ([0-9]+)/\1 120/' /etc/php5/fpm/php.ini
-RUN sed -ri 's/(memory_limit =) ([0-9]+)/\1 1024/' /etc/php5/fpm/php.ini
-RUN sed -ri 's/;(date.timezone =)/\1 Europe\/London/' /etc/php5/fpm/php.ini
+RUN mkdir /run/php
+RUN add-apt-repository -y ppa:ondrej/php && apt-get update && apt-get -y upgrade
+RUN apt-get install -y php5.6 php5.6-cli php5.6-dev php-pear php5.6-gd php5.6-mysqlnd php5.6-curl php5.6-json php5.6-fpm php5.6-mcrypt php5.6-imagick php5.6-xml php5.6-mbstring
+RUN sed -ri 's/(max_execution_time =) ([0-9]+)/\1 120/' /etc/php/5.6/cli/php.ini
+RUN sed -ri 's/(memory_limit =) ([0-9]+)/\1 -1/' /etc/php/5.6/cli/php.ini
+RUN sed -ri 's/;(date.timezone =)/\1 Europe\/London/' /etc/php/5.6/cli/php.ini
+RUN sed -ri 's/(max_execution_time =) ([0-9]+)/\1 120/' /etc/php/5.6/fpm/php.ini
+RUN sed -ri 's/(memory_limit =) ([0-9]+)/\1 1024/' /etc/php/5.6/fpm/php.ini
+RUN sed -ri 's/;(date.timezone =)/\1 Europe\/London/' /etc/php/5.6/fpm/php.ini
+#RUN sed -i "s|listen = /run/php/php5.6-fpm.sock|;listen = /run/php/php5.6-fpm.sock|" /etc/php/5.6/fpm/pool.d/www.conf && \
+#  sed -i "s|;listen = /run/php/php5.6-fpm.sock|;listen = /run/php/php5.6-fpm.sock\nlisten = 9000|" /etc/php/5.6/fpm/pool.d/www.conf && \
+#  sed -i "s|;env|env|" /etc/php/5.6/fpm/pool.d/www.conf
 
 # Install simple_php_yenc_decode.
 RUN \
   cd /tmp && \
   git clone https://github.com/kevinlekiller/simple_php_yenc_decode && \
   cd simple_php_yenc_decode/ && \
+  sed -ri 's/php-config5/php-config5.6/' ubuntu.sh && \
+  sed -ri 's/\/usr\/lib\/php5/\/usr\/lib\/php/' ubuntu.sh && \
+  sed -ri 's/\/etc\/php5/\/etc\/php\/5.6/g' ubuntu.sh && \
   sh ubuntu.sh && \
   cd ~ && \
   rm -rf /tmp/simple_php_yenc_decode/
 
 # Install memcached.
-RUN apt-get install -y memcached php5-memcached
+RUN apt-get install -y memcached php5.6-memcached
 
 # Install and configure nginx.
 RUN \
