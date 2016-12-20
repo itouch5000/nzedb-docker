@@ -4,7 +4,7 @@
 #
 
 # Use baseimage-docker
-FROM phusion/baseimage:0.9.18
+FROM phusion/baseimage:0.9.19
 
 # Set maintainer
 MAINTAINER razorgirl <https://github.com/razorgirl>
@@ -89,6 +89,7 @@ RUN \
   cd /tmp && \
   git clone https://github.com/kevinlekiller/simple_php_yenc_decode && \
   cd simple_php_yenc_decode/ && \
+  sed -ri 's/sudo //' ubuntu.sh && \
   sed -ri 's/php-config5/php-config5.6/' ubuntu.sh && \
   sed -ri 's/\/usr\/lib\/php5/\/usr\/lib\/php/' ubuntu.sh && \
   sed -ri 's/\/etc\/php5/\/etc\/php\/5.6/g' ubuntu.sh && \
