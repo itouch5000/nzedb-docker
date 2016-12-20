@@ -15,6 +15,7 @@ ENV HOME /root
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
+ENV TERM xterm
 
 # Fix a Debianism of the nobody's uid being 65534
 RUN usermod -u 99 nobody
@@ -71,14 +72,16 @@ RUN \
   pip3 list
 
 # Install PHP.
-RUN add-apt-repository -y ppa:ondrej/php5-5.6 && apt-get update && apt-get -y upgrade
-RUN apt-get install -y php5 php5-cli php5-dev php-pear php5-gd php5-mysqlnd php5-curl php5-json php5-fpm php5-mcrypt
-RUN sed -ri 's/(max_execution_time =) ([0-9]+)/\1 120/' /etc/php5/cli/php.ini
-RUN sed -ri 's/(memory_limit =) ([0-9]+)/\1 -1/' /etc/php5/cli/php.ini
-RUN sed -ri 's/;(date.timezone =)/\1 Europe\/London/' /etc/php5/cli/php.ini
-RUN sed -ri 's/(max_execution_time =) ([0-9]+)/\1 120/' /etc/php5/fpm/php.ini
-RUN sed -ri 's/(memory_limit =) ([0-9]+)/\1 1024/' /etc/php5/fpm/php.ini
-RUN sed -ri 's/;(date.timezone =)/\1 Europe\/London/' /etc/php5/fpm/php.ini
+RUN mkdir /run/php && add-apt-repository -y ppa:ondrej/php && add-apt-repository -y ppa:ondrej/php5-compat && apt-get update && apt-get -y upgrade
+RUN apt-get install -y php5 php5-cli php5-dev php-pear php5-gd php5-mysqlnd php5-curl php5-json php5-fpm php5-mcrypt php5.6-mbstring php5.6-xml php5.6-imagick
+RUN ln -s /etc/php/5.6 /etc/php5 && ln -s /usr/lib/php /usr/lib/php5 && ln -s /usr/bin/php-config5.6 /usr/bin/php-config5 && \
+  sed -ri 's/(max_execution_time =) ([0-9]+)/\1 120/' /etc/php5/cli/php.ini && \
+  sed -ri 's/(memory_limit =) ([0-9]+)/\1 -1/' /etc/php5/cli/php.ini && \
+  sed -ri 's/;(date.timezone =)/\1 Europe\/London/' /etc/php5/cli/php.ini && \
+  sed -ri 's/(max_execution_time =) ([0-9]+)/\1 120/' /etc/php5/fpm/php.ini && \
+  sed -ri 's/(memory_limit =) ([0-9]+)/\1 1024/' /etc/php5/fpm/php.ini && \
+  sed -ri 's/;(date.timezone =)/\1 Europe\/London/' /etc/php5/fpm/php.ini && \
+  update-alternatives --set php /usr/bin/php5.6
 
 # Install simple_php_yenc_decode.
 RUN \
@@ -90,7 +93,7 @@ RUN \
   rm -rf /tmp/simple_php_yenc_decode/
 
 # Install memcached.
-RUN apt-get install -y memcached php5-memcached
+RUN apt-get install -y memcached php5.6-memcached
 
 # Install and configure nginx.
 RUN \
