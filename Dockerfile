@@ -74,7 +74,8 @@ RUN \
 # Install PHP.
 RUN mkdir /run/php && add-apt-repository -y ppa:ondrej/php && add-apt-repository -y ppa:ondrej/php5-compat && apt-get update && apt-get -y upgrade
 RUN apt-get install -y php5 php5-cli php5-dev php-pear php5-gd php5-mysqlnd php5-curl php5-json php5-fpm php5-mcrypt php5.6-mbstring php5.6-xml php5.6-imagick
-RUN ln -s /etc/php/5.6 /etc/php5 && ln -s /usr/lib/php /usr/lib/php5 && ln -s /usr/bin/php-config5.6 /usr/bin/php-config5 && \
+RUN ln -s /etc/php/5.6 /etc/php5 && ln -s /usr/lib/php /usr/lib/php5 && \
+  ln -s /usr/bin/php-config5.6 /usr/bin/php-config5 && \
   sed -ri 's/(max_execution_time =) ([0-9]+)/\1 120/' /etc/php5/cli/php.ini && \
   sed -ri 's/(memory_limit =) ([0-9]+)/\1 -1/' /etc/php5/cli/php.ini && \
   sed -ri 's/;(date.timezone =)/\1 Europe\/London/' /etc/php5/cli/php.ini && \

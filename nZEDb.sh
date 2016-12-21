@@ -3,7 +3,7 @@
 export COMPOSER_HOME=/root
 export TERM=xterm
 
-chmod -R 777 /var/lib/php5
+#chmod -R 777 /var/lib/php5
 
 cd /tmp
 php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
