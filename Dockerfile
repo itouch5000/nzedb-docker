@@ -79,6 +79,7 @@ RUN ln -s /etc/php/5.6 /etc/php5 && ln -s /usr/lib/php /usr/lib/php5 && \
   sed -ri 's/(max_execution_time =) ([0-9]+)/\1 120/' /etc/php5/cli/php.ini && \
   sed -ri 's/(memory_limit =) ([0-9]+)/\1 -1/' /etc/php5/cli/php.ini && \
   sed -ri 's/;(date.timezone =)/\1 Europe\/London/' /etc/php5/cli/php.ini && \
+  sed -ri 's/;error_log = php_errors.log/error_log = \/var\/log\/php_errors.log/' /etc/php5/cli/php.ini && \
   sed -ri 's/(max_execution_time =) ([0-9]+)/\1 120/' /etc/php5/fpm/php.ini && \
   sed -ri 's/(memory_limit =) ([0-9]+)/\1 1024/' /etc/php5/fpm/php.ini && \
   sed -ri 's/;(date.timezone =)/\1 Europe\/London/' /etc/php5/fpm/php.ini && \
