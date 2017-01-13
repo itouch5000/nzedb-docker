@@ -5,11 +5,18 @@ export TERM=xterm
 
 #chmod -R 777 /var/lib/php5
 
-cd /tmp
-php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-php composer-setup.php
-php -r "unlink('composer-setup.php');"
-mv composer.phar /usr/local/bin/composer
+#cd /tmp
+#php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+#php composer-setup.php
+#php -r "unlink('composer-setup.php');"
+#mv composer.phar /usr/local/bin/composer
+
+# Setup the Composer installer.
+curl -o /tmp/composer-setup.php https://getcomposer.org/installer && \
+curl -o /tmp/composer-setup.sig https://composer.github.io/installer.sig && \
+php -r "if (hash('SHA384', file_get_contents('/tmp/composer-setup.php')) !== trim(file_get_contents('/tmp/composer-setup.sig'))) { unlink('/tmp/composer-setup.php'); echo 'Invalid installer' . PHP_EOL; exit(1); }" && \
+cd /tmp && \
+php composer-setup.php --install-dir=/usr/local/bin --filename=composer
 
 #if [[ ! -e /var/www/nZEDb/www/config.php ]]; then
 
