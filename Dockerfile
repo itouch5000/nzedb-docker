@@ -93,7 +93,8 @@ RUN \
   php5.6-common \
   php5.6-mcrypt \
   php5.6-mbstring \
-  php5.6-xml
+  php5.6-xml \
+  php5.6-imagick
 
 # Configure PHP
 RUN \
