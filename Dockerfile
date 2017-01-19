@@ -16,6 +16,9 @@ ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 ENV TERM xterm
 
+# Update /etc/default/locale
+RUN update-locale
+
 # Regenerate SSH host keys.
 RUN /etc/my_init.d/00_regen_ssh_host_keys.sh
 
