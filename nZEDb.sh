@@ -42,6 +42,14 @@ if [[ -e /var/www/nZEDb/nzedb/config/config.php ]]; then
 
   $croncmd
 
+  croncmd="/usr/bin/php /var/www/nZEDb/misc/update/match_prefiles.php full"
+  cronjob="*/60 * * * * $croncmd"
+
+  (crontab -l | grep -v "$croncmd" ; echo "$cronjob" ) | crontab -
+
+  $croncmd
+
+
   cd /var/www/nZEDb/misc/update/nix/tmux
   exec php start.php
 
