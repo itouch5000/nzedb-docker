@@ -1,7 +1,7 @@
 server {
         # Change these settings to match your machine
         listen 8810 default_server;
-        server_name localhost;
+        server_name "";
 
         # These are the log locations, you should not have to change these.
         access_log /var/log/nginx/access.log;
