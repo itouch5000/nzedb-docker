@@ -1,7 +1,7 @@
 server {
         # Change these settings to match your machine
         listen 8810 default_server;
-        server_name "";
+        server_name localhost;
 
         # These are the log locations, you should not have to change these.
         access_log /var/log/nginx/access.log;
@@ -49,5 +49,7 @@ server {
                 # The next two lines should go in your fastcgi_params
                 fastcgi_index index.php;
                 fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+
+		fastcgi_param  SERVER_NAME        $host;
         }
 }
