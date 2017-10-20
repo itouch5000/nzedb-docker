@@ -15,6 +15,10 @@ ENV HOME /root
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
+ENV MYSQL_DATABASE nzedb
+ENV MYSQL_USER nzedb
+ENV MYSQL_PASSWORD nzedb
+ENV MYSQL_ROOT_PASSWORD nzedb
 
 # Fix a Debianism of the nobody's uid being 65534
 RUN usermod -u 99 nobody
@@ -48,13 +52,13 @@ RUN \
   apt-get install -y unrar-free lame mediainfo p7zip-full
 
 # Install MariaDB.
-#RUN \
-#  apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0xcbcb082a1bb943db && \
-#  apt-get update && \
-#  echo "deb http://mirror2.hs-esslingen.de/mariadb/repo/10.0/ubuntu trusty main" > /etc/apt/sources.list.d/mariadb.list && \
-#  apt-get update && \
-#  apt-get install -y mariadb-server && \
-#  sed -i 's/^\(bind-address\s.*\)/# \1/' /etc/mysql/my.cnf
+RUN \
+  apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0xcbcb082a1bb943db && \
+  apt-get update && \
+  echo "deb http://mirror2.hs-esslingen.de/mariadb/repo/10.0/ubuntu trusty main" > /etc/apt/sources.list.d/mariadb.list && \
+  apt-get update && \
+   DEBIAN_FRONTEND=noninteractive apt-get install -y mariadb-server && \
+  sed -i 's/^\(bind-address\s.*\)/# \1/' /etc/mysql/my.cnf
 
 # Install Python MySQL modules.
 RUN \
@@ -114,24 +118,57 @@ RUN \
   ln -s /etc/nginx/sites-available/nZEDb /etc/nginx/sites-enabled/nZEDb
 
 ## Clone nZEDb master and set directory permissions
-#RUN \
-#  mkdir /var/www && \
-#  cd /var/www && \
-#  git clone https://github.com/nZEDb/nZEDb.git && \
-#  chown www-data:www-data nZEDb/www -R
-#  chmod 777 /var/www/nZEDb/libs/smarty/templates_c && \
+RUN \
+  cd /var/www && \
+  git clone https://github.com/nZEDb/nZEDb.git && \
+  chown www-data:www-data nZEDb/www -R
+  #&& chmod 777 /var/www/nZEDb/libs/smarty/templates_c && \
+
+# Setup the Composer installer.
+RUN \
+  curl -o /tmp/composer-setup.php https://getcomposer.org/installer && \
+  curl -o /tmp/composer-setup.sig https://composer.github.io/installer.sig && \
+  php -r "if (hash('SHA384', file_get_contents('/tmp/composer-setup.php')) !== trim(file_get_contents('/tmp/composer-setup.sig'))) { unlink('/tmp/composer-setup.php'); echo 'Invalid installer' . PHP_EOL; exit(1); }" && \
+  cd /tmp && \
+  php composer-setup.php --install-dir=/usr/local/bin --filename=composer
 
 # Add services.
 RUN mkdir /etc/service/nginx
 ADD nginx.sh /etc/service/nginx/run
 RUN mkdir /etc/service/php5-fpm && mkdir /var/log/php5-fpm
 ADD php5-fpm.sh /etc/service/php5-fpm/run
-#RUN mkdir /etc/service/mariadb
-#ADD mariadb.sh /etc/service/mariadb/run
+RUN mkdir /etc/service/mariadb
+ADD mariadb.sh /etc/service/mariadb/run
 
 # Add nZEDb.sh to execute during container startup
 RUN mkdir -p /etc/my_init.d
 ADD nZEDb.sh /etc/my_init.d/nZEDb.sh
+
+RUN chmod 755 /var/lib/php/sessions
+
+# Install dependencies.
+RUN \
+  cd /var/www/nZEDb && \
+  composer install --prefer-source
+
+RUN \
+  chmod -R 755 /var/www/nZEDb && \
+  chgrp www-data /var/www/nZEDb/resources/smarty/templates_c && \
+  chmod 775 /var/www/nZEDb/resources/smarty/templates_c && \
+  chgrp -R www-data /var/www/nZEDb/resources/covers && \
+  chmod -R 775 /var/www/nZEDb/resources/covers && \
+  chgrp www-data /var/www/nZEDb/www && \
+  chmod 775 /var/www/nZEDb/www && \
+  chgrp www-data /var/www/nZEDb/www/install && \
+  chmod 777 /var/www/nZEDb/www/install && \
+  chgrp -R www-data /var/www/nZEDb/resources/nzb && \
+  chmod -R 775 /var/www/nZEDb/resources/nzb && \
+  chgrp www-data /var/www/nZEDb/configuration && \
+  chmod -R 775 /var/www/nZEDb/configuration && \
+  chmod 777 /var/www/nZEDb/resources/smarty/templates_c && \
+  chmod 777 /var/lib/php/sessions
+  
+RUN mysql_tzinfo_to_sql /usr/share/zoneinfo | sed "s/Local time zone .*$/UNSET'\)/g" > /etc/mysql/zoneinfo.sql 
 
 ## Install SSH key.
 ADD id_rsa.pub /tmp/key.pub
