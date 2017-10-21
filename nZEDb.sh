@@ -49,7 +49,7 @@ if [[ -e /var/www/nZEDb/nzedb/config/config.php ]]; then
 
   $croncmd
 
-  cd /var/www/nZEDb/misc/update/nix/tmux
-  exec php start.php
+  cd /var/www/nZEDb/misc/update/nix/screen/threaded
+  exec sh start.sh
 
 fi
