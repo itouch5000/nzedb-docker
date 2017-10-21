@@ -118,19 +118,18 @@ RUN \
   ln -s /etc/nginx/sites-available/nZEDb /etc/nginx/sites-enabled/nZEDb
 
 ## Clone nZEDb master and set directory permissions
-RUN \
-  cd /var/www && \
-  git clone https://github.com/nZEDb/nZEDb.git && \
-  chown www-data:www-data nZEDb/www -R
-  #&& chmod 777 /var/www/nZEDb/libs/smarty/templates_c && \
+#RUN \
+#  cd /var/www && \
+#  git clone https://github.com/nZEDb/nZEDb.git && \
+#  chown www-data:www-data nZEDb/www -R
 
 # Setup the Composer installer.
-RUN \
-  curl -o /tmp/composer-setup.php https://getcomposer.org/installer && \
-  curl -o /tmp/composer-setup.sig https://composer.github.io/installer.sig && \
-  php -r "if (hash('SHA384', file_get_contents('/tmp/composer-setup.php')) !== trim(file_get_contents('/tmp/composer-setup.sig'))) { unlink('/tmp/composer-setup.php'); echo 'Invalid installer' . PHP_EOL; exit(1); }" && \
-  cd /tmp && \
-  php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+#RUN \
+#  curl -o /tmp/composer-setup.php https://getcomposer.org/installer && \
+#  curl -o /tmp/composer-setup.sig https://composer.github.io/installer.sig && \
+#  php -r "if (hash('SHA384', file_get_contents('/tmp/composer-setup.php')) !== trim(file_get_contents('/tmp/composer-setup.sig'))) { unlink('/tmp/composer-setup.php'); echo 'Invalid installer' . PHP_EOL; exit(1); }" && \
+#  cd /tmp && \
+#  php composer-setup.php --install-dir=/usr/local/bin --filename=composer
 
 # Add services.
 RUN mkdir /etc/service/nginx
@@ -147,26 +146,11 @@ ADD nZEDb.sh /etc/my_init.d/nZEDb.sh
 RUN chmod 755 /var/lib/php/sessions
 
 # Install dependencies.
-RUN \
-  cd /var/www/nZEDb && \
-  composer install --prefer-source
+#RUN \
+#  cd /var/www/nZEDb && \
+#  composer install --prefer-source
 
-RUN \
-  chmod -R 755 /var/www/nZEDb && \
-  chgrp www-data /var/www/nZEDb/resources/smarty/templates_c && \
-  chmod 775 /var/www/nZEDb/resources/smarty/templates_c && \
-  chgrp -R www-data /var/www/nZEDb/resources/covers && \
-  chmod -R 775 /var/www/nZEDb/resources/covers && \
-  chgrp www-data /var/www/nZEDb/www && \
-  chmod 775 /var/www/nZEDb/www && \
-  chgrp www-data /var/www/nZEDb/www/install && \
-  chmod 777 /var/www/nZEDb/www/install && \
-  chgrp -R www-data /var/www/nZEDb/resources/nzb && \
-  chmod -R 775 /var/www/nZEDb/resources/nzb && \
-  chgrp www-data /var/www/nZEDb/configuration && \
-  chmod -R 775 /var/www/nZEDb/configuration && \
-  chmod 777 /var/www/nZEDb/resources/smarty/templates_c && \
-  chmod 777 /var/lib/php/sessions
+RUN chmod 777 /var/lib/php/sessions
 
 RUN mysql_tzinfo_to_sql /usr/share/zoneinfo | sed "s/Local time zone .*$/UNSET'\)/g" > /etc/mysql/zoneinfo.sql 
 
