@@ -131,6 +131,12 @@ RUN \
 #  cd /tmp && \
 #  php composer-setup.php --install-dir=/usr/local/bin --filename=composer
 
+## Config mariadb
+ADD mariadb.cnf  /etc/mysql/conf.d/mariadb.cnf
+
+#Setup DB
+RUN mysql_install_db
+
 # Add services.
 RUN mkdir /etc/service/nginx
 ADD nginx.sh /etc/service/nginx/run
@@ -153,9 +159,6 @@ RUN chmod 755 /var/lib/php/sessions
 RUN chmod 777 /var/lib/php/sessions
 
 RUN mysql_tzinfo_to_sql /usr/share/zoneinfo | sed "s/Local time zone .*$/UNSET'\)/g" > /etc/mysql/zoneinfo.sql 
-
-## Config mariadb
-ADD mariadb.cnf  /etc/mysql/conf.d/mariadb.cnf
 
 # Define mountable directories
 VOLUME ["/etc/nginx/sites-enabled", "/var/log", "/var/www/nZEDb", "/var/lib/mysql"]
