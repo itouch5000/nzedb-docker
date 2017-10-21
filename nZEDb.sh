@@ -44,7 +44,7 @@ fi
 
 mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root -p mysql
 
-if [[ -e /var/www/nZEDb/nzedb/config/config.php ]]; then
+if [[ -e /var/www/nZEDb/configuration/install.lock ]]; then
 
   croncmd="/usr/bin/php /var/www/nZEDb/cli/data/predb_import_daily_batch.php progress remote false"
   cronjob="0 7 * * * $croncmd"
