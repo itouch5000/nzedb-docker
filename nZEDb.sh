@@ -18,7 +18,8 @@ if [[ ! -e /var/www/nZEDb/www/config.php ]]; then
   git clone https://github.com/nZEDb/nZEDb.git
   mkdir /var/www
   mv /opt/nZEDb/* /var/www/nZEDb
-  cd /var/www  
+  cd /var/www/nZEDb
+  git init
 
   chmod -R 777 /var/www/nZEDb/resources/nzb/
   chmod -R 777 /var/www/nZEDb/resources/tmp/unrar/
@@ -37,7 +38,6 @@ if [[ ! -e /var/www/nZEDb/www/config.php ]]; then
   chmod -R 775 /var/www/nZEDb/configuration
   chmod 777 /var/www/nZEDb/resources/smarty/templates_c
 
-  cd /var/www/nZEDb
   composer install --prefer-source
 
 fi
@@ -54,6 +54,6 @@ if [[ -e /var/www/nZEDb/nzedb/config/config.php ]]; then
   $croncmd
 
   cd /var/www/nZEDb/misc/update/nix/screen/threaded
-  exec sh start.sh
+  exec screen sh start.sh
 
 fi

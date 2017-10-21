@@ -41,7 +41,7 @@ RUN \
   locale-gen en_US.UTF-8
 
 # Install basic software.
-RUN apt-get install -y curl git htop man software-properties-common unzip vim wget tmux ntp ntpdate time
+RUN apt-get install -y curl git htop man software-properties-common unzip vim wget tmux ntp ntpdate time screen
 
 # Install additional software.
 RUN apt-get install -y htop nmon vnstat tcptrack bwm-ng mytop
