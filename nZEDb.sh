@@ -54,6 +54,6 @@ if [[ -e /var/www/nZEDb/nzedb/config/config.php ]]; then
   $croncmd
 
   cd /var/www/nZEDb/misc/update/nix/tmux
-  php start.php
+  exec php start.php
 
 fi
