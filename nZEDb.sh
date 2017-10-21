@@ -9,7 +9,7 @@ php composer-setup.php
 php -r "unlink('composer-setup.php');"
 mv composer.phar /usr/local/bin/composer
 
-if [[ ! -e /var/www/nZEDb/www/config.php ]]; then
+if [[ ! -e /var/www/nZEDb/configuration/install.lock ]]; then
 
   echo "config.php does not exist. Cloning nZEDb..."
 
@@ -54,6 +54,6 @@ if [[ -e /var/www/nZEDb/nzedb/config/config.php ]]; then
   $croncmd
 
   cd /var/www/nZEDb/misc/update/nix/tmux
-  exec php start.php
+  php start.php
 
 fi
