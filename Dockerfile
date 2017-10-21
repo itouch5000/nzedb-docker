@@ -15,10 +15,6 @@ ENV HOME /root
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
-ENV MYSQL_DATABASE nzedb
-ENV MYSQL_USER nzedb
-ENV MYSQL_PASSWORD nzedb
-ENV MYSQL_ROOT_PASSWORD nzedb
 
 # Fix a Debianism of the nobody's uid being 65534
 RUN usermod -u 99 nobody
@@ -159,6 +155,17 @@ RUN chmod 755 /var/lib/php/sessions
 RUN chmod 777 /var/lib/php/sessions
 
 RUN mysql_tzinfo_to_sql /usr/share/zoneinfo | sed "s/Local time zone .*$/UNSET'\)/g" > /etc/mysql/zoneinfo.sql 
+
+# Configure old version of tmux
+RUN cd /opt && \
+ wget https://github.com/tmux/tmux/releases/download/2.0/tmux-2.0.tar.gz && \
+ tar zxvf tmux-2.0.tar.gz && \
+ cd tmux-2.0 && \
+ apt-get -y build-dep tmux && \
+ ./configure && \
+ make -j8 && \
+ make install && \
+ ls -s /usr/local/bin/tmux /usr/bin/tmux
 
 # Define mountable directories
 VOLUME ["/etc/nginx/sites-enabled", "/var/log", "/var/www/nZEDb", "/var/lib/mysql"]
