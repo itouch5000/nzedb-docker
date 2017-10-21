@@ -12,9 +12,13 @@ mv composer.phar /usr/local/bin/composer
 if [[ ! -e /var/www/nZEDb/www/config.php ]]; then
 
   echo "config.php does not exist. Cloning nZEDb..."
-  mkdir /var/www
-  cd /var/www
+
+  mkdir /opt
+  cd /opt
   git clone https://github.com/nZEDb/nZEDb.git
+  mkdir /var/www
+  mv /opt/nZEDB /var/www
+  cd /var/www  
 
   chmod -R 777 /var/www/nZEDb/resources/nzb/
   chmod -R 777 /var/www/nZEDb/resources/tmp/unrar/
