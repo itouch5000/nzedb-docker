@@ -1,0 +1,3 @@
+[mysqld]
+default_time_zone=America/Phoenix
+max_allowed_packet=256M

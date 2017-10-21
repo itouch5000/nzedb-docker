@@ -80,10 +80,10 @@ RUN add-apt-repository -y ppa:ondrej/php && apt-get update && apt-get -y upgrade
 RUN apt-get install -y php5.6 php5.6-cli php5.6-dev php-pear php5.6-gd php5.6-mysqlnd php5.6-curl php5.6-json php5.6-fpm php5.6-mcrypt php5.6-imagick php5.6-xml php5.6-mbstring
 RUN sed -ri 's/(max_execution_time =) ([0-9]+)/\1 120/' /etc/php/5.6/cli/php.ini
 RUN sed -ri 's/(memory_limit =) ([0-9]+)/\1 -1/' /etc/php/5.6/cli/php.ini
-RUN sed -ri 's/;(date.timezone =)/\1 Europe\/London/' /etc/php/5.6/cli/php.ini
+RUN sed -ri 's/;(date.timezone =)/\1 America\/Phoenix/' /etc/php/5.6/cli/php.ini
 RUN sed -ri 's/(max_execution_time =) ([0-9]+)/\1 120/' /etc/php/5.6/fpm/php.ini
 RUN sed -ri 's/(memory_limit =) ([0-9]+)/\1 1024/' /etc/php/5.6/fpm/php.ini
-RUN sed -ri 's/;(date.timezone =)/\1 Europe\/London/' /etc/php/5.6/fpm/php.ini
+RUN sed -ri 's/;(date.timezone =)/\1 America\/Phoenix/' /etc/php/5.6/fpm/php.ini
 RUN sed -ri 's/;request_terminate_timeout = 0/request_terminate_timeout = 120/' /etc/php/5.6/fpm/pool.d/www.conf
 #RUN sed -i "s|listen = /run/php/php5.6-fpm.sock|;listen = /run/php/php5.6-fpm.sock|" /etc/php/5.6/fpm/pool.d/www.conf && \
 #  sed -i "s|;listen = /run/php/php5.6-fpm.sock|;listen = /run/php/php5.6-fpm.sock\nlisten = 9000|" /etc/php/5.6/fpm/pool.d/www.conf && \
@@ -167,12 +167,11 @@ RUN \
   chmod -R 775 /var/www/nZEDb/configuration && \
   chmod 777 /var/www/nZEDb/resources/smarty/templates_c && \
   chmod 777 /var/lib/php/sessions
-  
+
 RUN mysql_tzinfo_to_sql /usr/share/zoneinfo | sed "s/Local time zone .*$/UNSET'\)/g" > /etc/mysql/zoneinfo.sql 
 
-## Install SSH key.
-ADD id_rsa.pub /tmp/key.pub
-RUN cat /tmp/key.pub >> /root/.ssh/authorized_keys && rm -f /tmp/key.pub
+## Config mariadb
+ADD mariadb.cnf  /etc/mysql/conf.d/mariadb.cnf
 
 # Define mountable directories
 VOLUME ["/etc/nginx/sites-enabled", "/var/log", "/var/www/nZEDb", "/var/lib/mysql"]
