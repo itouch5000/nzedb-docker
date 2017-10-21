@@ -17,7 +17,7 @@ if [[ ! -e /var/www/nZEDb/www/config.php ]]; then
   cd /opt
   git clone https://github.com/nZEDb/nZEDb.git
   mkdir /var/www
-  mv /opt/nZEDb /var/www
+  mv /opt/nZEDb/* /var/www/nZEDb
   cd /var/www  
 
   chmod -R 777 /var/www/nZEDb/resources/nzb/
