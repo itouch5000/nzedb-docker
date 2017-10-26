@@ -49,6 +49,6 @@ su znc -c znc
 if [[ -e /var/www/nZEDb/configuration/install.lock ]]; then
 
   cd /var/www/nZEDb/misc/update/nix/tmux
-  exec php start.php
+  #exec php start.php
 
 fi
