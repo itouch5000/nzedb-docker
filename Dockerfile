@@ -169,7 +169,7 @@ RUN cd /opt && \
 
 # Setup for ZNC
 RUN apt-get install -y python-software-properties
-RUN add-apt-repository ppa:teward/znc && sudo apt-get update
+RUN add-apt-repository ppa:teward/znc && apt-get update
 RUN apt-get install -y znc znc-dbg znc-dev znc-perl znc-python znc-tcl
 
 # Define mountable directories
