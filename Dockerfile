@@ -167,6 +167,11 @@ RUN cd /opt && \
  make install && \
  ls -s /usr/local/bin/tmux /usr/bin/tmux
 
+# Setup for ZNC
+RUN apt-get install -y python-software-properties
+RUN add-apt-repository ppa:teward/znc && sudo apt-get update
+RUN apt-get install znc znc-dbg znc-dev znc-perl znc-python znc-tcl
+
 # Define mountable directories
 VOLUME ["/etc/nginx/sites-enabled", "/var/log", "/var/www/nZEDb", "/var/lib/mysql"]
 
