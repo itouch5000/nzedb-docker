@@ -141,10 +141,6 @@ ADD php5-fpm.sh /etc/service/php5-fpm/run
 RUN mkdir /etc/service/mariadb
 ADD mariadb.sh /etc/service/mariadb/run
 
-# Add nZEDb.sh to execute during container startup
-RUN mkdir -p /etc/my_init.d
-ADD nZEDb.sh /etc/my_init.d/nZEDb.sh
-
 RUN chmod 755 /var/lib/php/sessions
 
 # Install dependencies.
@@ -168,9 +164,17 @@ RUN cd /opt && \
  ls -s /usr/local/bin/tmux /usr/bin/tmux
 
 # Setup for ZNC
-RUN apt-get install -y python-software-properties
-RUN add-apt-repository ppa:teward/znc && apt-get update
 RUN apt-get install -y znc znc-dbg znc-dev znc-perl znc-python znc-tcl
+RUN useradd -m -d /home/znc znc && mkdir -p /home/znc/.znc/configs
+COPY znc.conf /home/znc/.znc/configs/
+RUN znc --makepem --datadir /home/znc/.znc && chown -R znc:znc /home/znc/
+COPY znc.cron /etc/cron.d/znc
+
+COPY predbimport.cron /etc/cron.d/predbimport
+
+# Add nZEDb.sh to execute during container startup
+RUN mkdir -p /etc/my_init.d
+ADD nZEDb.sh /etc/my_init.d/nZEDb.sh
 
 # Define mountable directories
 VOLUME ["/etc/nginx/sites-enabled", "/var/log", "/var/www/nZEDb", "/var/lib/mysql"]
