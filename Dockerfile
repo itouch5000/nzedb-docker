@@ -44,8 +44,9 @@ RUN apt-get install -y htop nmon vnstat tcptrack bwm-ng mytop
 
 # Install ffmpeg, mediainfo, p7zip-full, unrar and lame.
 RUN \
-  curl http://ffmpeg.gusari.org/static/64bit/ffmpeg.static.64bit.latest.tar.gz | tar xfvz - -C /usr/local/bin && \
-  apt-get install -y unrar-free lame mediainfo p7zip-full par2
+  add-apt-repository -y ppa:djcj/hybrid && \
+  apt-get update && \
+  apt-get install -y ffmpeg unrar-free lame mediainfo p7zip-full par2
 
 # Install MariaDB.
 RUN \
